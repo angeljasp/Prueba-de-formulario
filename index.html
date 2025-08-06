@@ -3,93 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Contacto | JASPIJPI</title>
+    <title>Formulario JASPIJPI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
-    <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --success: #27ae60;
-        }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f5f7fa;
-            margin: 0;
-            padding: 20px;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 30px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        button {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 14px;
-            width: 100%;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #2980b9;
-        }
-        #confirmation {
-            display: none;
-            background: #e8f5e9;
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-            border-left: 4px solid var(--success);
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #7f8c8d;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="form-container">
-        <h1>Formulario de Contacto</h1>
-        
+        <div class="form-header">
+            <img src="https://via.placeholder.com/150x50?text=JASPIJPI+Logo" alt="Logo JASPIJPI" class="logo">
+            <h1>Formulario de Contacto</h1>
+        </div>
+
         <form id="contactForm" name="contacto-jaspijpi" netlify data-netlify="true">
             <input type="hidden" name="form-name" value="contacto-jaspijpi">
 
+            <!-- Campos del formulario -->
             <div class="form-group">
-                <label for="nombres">Nombres*</label>
-                <input type="text" id="nombres" name="nombres" pattern="[A-Za-z ]{4,}" title="Mínimo 2 nombres" required>
+                <label for="nombres">Nombres* (2 nombres mínimo)</label>
+                <input type="text" id="nombres" name="nombres" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ ]{3,}( [A-Za-záéíóúñÁÉÍÓÚÑ ]{3,})+" title="Ingrese al menos 2 nombres" required>
             </div>
 
             <div class="form-group">
-                <label for="apellidos">Apellidos*</label>
-                <input type="text" id="apellidos" name="apellidos" pattern="[A-Za-z ]{4,}" title="Mínimo 2 apellidos" required>
+                <label for="apellidos">Apellidos* (2 apellidos mínimo)</label>
+                <input type="text" id="apellidos" name="apellidos" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ ]{3,}( [A-Za-záéíóúñÁÉÍÓÚÑ ]{3,})+" title="Ingrese al menos 2 apellidos" required>
             </div>
 
             <div class="form-group">
@@ -107,91 +43,28 @@
                 <input type="date" id="fecha" name="fecha" required>
             </div>
 
-            <button type="submit" id="submitBtn">Enviar Formulario</button>
+            <button type="submit" id="submitBtn">
+                <span class="button-text">Enviar Solicitud</span>
+                <span class="spinner hidden"></span>
+            </button>
         </form>
 
-        <div id="confirmation">
-            <h3>✅ Solicitud registrada</h3>
+        <div id="confirmation" class="hidden">
+            <div class="success-icon">✓</div>
+            <h3>Solicitud Registrada</h3>
             <p>ID de seguimiento: <strong id="trackingId"></strong></p>
-            <button onclick="copyToClipboard()">Copiar ID</button>
+            <button id="copyBtn" class="copy-button">
+                <span>Copiar ID</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M8 17.929H6c-1.105 0-2-.912-2-2.036V5.036C4 3.91 4.895 3 6 3h8c1.105 0 2 .911 2 2.036v1.866m-6 .17h8c1.105 0 2 .91 2 2.035v10.857C20 21.09 19.105 22 18 22h-8c-1.105 0-2-.911-2-2.036V9.107c0-1.124.895-2.036 2-2.036z"></path>
+                </svg>
+            </button>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script>
-        // Configuración inicial
-        emailjs.init('naOhhhdCRqiLYdV5P');
-        
-        // Selector de teléfono internacional
-        const phoneInput = document.querySelector("#telefono");
-        window.intlTelInput(phoneInput, {
-            initialCountry: "auto",
-            geoIpLookup: callback => {
-                fetch("https://ipapi.co/json")
-                    .then(res => res.json())
-                    .then(data => callback(data.country_code))
-                    .catch(() => callback("us"));
-            },
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
-        });
-
-        // Manejo del formulario
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Enviando...';
-
-            // Generar ID profesional
-            const trackingId = `JASPI-${new Date().getTime().toString(36).toUpperCase()}-${Math.floor(Math.random()*900)+100}`;
-            
-            try {
-                // 1. Enviar a Netlify
-                const formData = new FormData(e.target);
-                formData.append('tracking_id', trackingId);
-                formData.append('telefono_completo', phoneInput.getNumber());
-                
-                await fetch('/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams(formData),
-                });
-
-                // 2. Enviar correo con EmailJS
-                await emailjs.send(
-                    'service_wy6vkhd',
-                    'template_wmugv6o', 
-                    {
-                        tracking_id: trackingId,
-                        nombres: formData.get('nombres'),
-                        apellidos: formData.get('apellidos'),
-                        email: formData.get('email'),
-                        telefono: phoneInput.getNumber(),
-                        fecha: new Date(formData.get('fecha')).toLocaleDateString('es-ES'),
-                        reply_to: formData.get('email')
-                    }
-                );
-
-                // Mostrar confirmación
-                document.getElementById('trackingId').textContent = trackingId;
-                document.getElementById('confirmation').style.display = 'block';
-                e.target.reset();
-
-            } catch (error) {
-                alert(`Error: ${error.message || 'Por favor intente nuevamente'}`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Enviar Formulario';
-            }
-        });
-
-        function copyToClipboard() {
-            const id = document.getElementById('trackingId').textContent;
-            navigator.clipboard.writeText(id);
-            alert(`ID copiado: ${id}`);
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
