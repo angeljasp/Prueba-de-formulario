@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitud de Servicio</title>
-    <!-- Ruta correcta al CSS (asegúrate de que coincida con tu estructura) -->
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -12,7 +11,10 @@
         <h1>Solicitud de Servicio</h1>
         <p>Complete el formulario para generar su ID único</p>
 
-        <form id="serviceForm" netlify> <!-- Atributo "netlify" para habilitar el envío en Netlify -->
+        <!-- Formulario con Netlify -->
+        <form id="serviceForm" name="solicitud-servicio" netlify data-netlify="true">
+            <input type="hidden" name="form-name" value="solicitud-servicio">
+
             <div class="form-group">
                 <label for="nombre">Nombre completo</label>
                 <input type="text" id="nombre" name="nombre" required>
@@ -38,9 +40,10 @@
                 <textarea id="detalles" name="detalles" rows="4" required></textarea>
             </div>
 
-            <button type="submit">Generar ID de Solicitud</button>
+            <button type="submit" id="submitBtn">Enviar Solicitud</button>
         </form>
 
+        <!-- Sección de ID generado (oculta inicialmente) -->
         <div id="trackingID" class="hidden">
             <p>ID de Seguimiento: <span id="idGenerado">XXXX-XXXX-XXXX</span></p>
             <button id="copyButton">Copiar</button>
@@ -49,7 +52,6 @@
         <p class="footer">¿Necesitas ayuda? <a href="#">💬 Contáctanos</a></p>
     </div>
 
-    <!-- Scripts (asegúrate de que la ruta sea correcta) -->
     <script src="./script.js"></script>
 </body>
 </html>
