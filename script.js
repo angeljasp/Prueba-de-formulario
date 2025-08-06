@@ -1,49 +1,44 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('serviceForm');
-    const confirmation = document.getElementById('confirmation');
-    const displayId = document.getElementById('displayId');
-    const trackingInput = document.getElementById('tracking_id');
+document.getElementById('serviceForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Enviando...';
 
-    // Generar ID único al cargar
-    const generateID = () => {
-        const datePart = Date.now().toString(36).toUpperCase();
-        const randomPart = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-        return `SOL-${datePart}-${randomPart}`;
-    };
+  try {
+    // 1. Enviar a Netlify
+    const formData = new FormData(e.target);
+    await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(formData),
+    });
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando...';
+    // 2. Enviar correo via EmailJS (solo si está configurado)
+    if (typeof emailjs !== 'undefined') {
+      await emailjs.send(
+        'service_puvhyly', 
+        'template_hskgq77', 
+        {
+          nombre: formData.get('nombre'),
+          email: formData.get('email'),
+          telefono: formData.get('telefono'),
+          detalles: formData.get('detalles'),
+        }
+      );
+    }
 
-        // Generar y asignar ID
-        const trackingId = generateID();
-        trackingInput.value = trackingId;
+    // Redirigir a página de éxito o mostrar mensaje
+    alert('¡Formulario enviado con éxito!');
+    window.location.href = "/gracias.html"; // Opcional
 
-        try {
-            // 1. Enviar a Netlify Forms
-            const formData = new FormData(form);
-            await fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(formData),
-            });
-
-            // 2. Enviar correo via EmailJS (usando la plantilla que te funcionaba)
-            await emailjs.send(
-                'service_puvhyly', // Tu servicio ID
-                'template_hskgq77', // Tu template ID
-                {
-                    tracking_id: trackingId,
-                    nombre: formData.get('nombre'),
-                    email: formData.get('email'),
-                    telefono: formData.get('telefono'),
-                    detalles: formData.get('detalles')
-                }
-            );
-
+  } catch (error) {
+    console.error('Error:', error);
+    alert(`Error al enviar: ${error.message || 'Por favor intenta nuevamente'}`);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Enviar Solicitud';
+  }
+});
             // Mostrar confirmación
             displayId.textContent = trackingId;
             confirmation.classList.remove('hidden');
