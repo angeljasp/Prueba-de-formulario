@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('serviceForm');
-    const confirmation = document.getElementById('confirmation');
     const submitBtn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', async (e) => {
@@ -8,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Enviando...';
 
-        // Generar ID de seguimiento
-        const trackingId = `JASPI-${Date.now().toString(36).toUpperCase()}`;
-        
+        // Generar ID único (ej: "JASPI-1A2B3C")
+        const trackingId = `JASPI-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+
         try {
             // 1. Enviar a Netlify Forms
             const formData = new FormData(form);
@@ -22,28 +21,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: new URLSearchParams(formData),
             });
 
-            // 2. Enviar correo via EmailJS
+            // 2. Enviar correo con EmailJS (usando tus datos)
             await emailjs.send(
-                'service_wy6vkhd', // Nuevo service ID
-                'template_wmugv6o', // Nuevo template ID
+                'service_wy6vkhd', // Service ID
+                'template_wmugv6o', // Template ID
                 {
                     tracking_id: trackingId,
                     nombre: formData.get('nombre'),
                     email: formData.get('email'),
                     telefono: formData.get('telefono'),
                     detalles: formData.get('detalles'),
-                    reply_to: formData.get('email')
+                    reply_to: formData.get('email') // Para respuestas
                 }
             );
 
             // Mostrar confirmación
             document.getElementById('trackingId').textContent = trackingId;
-            confirmation.classList.remove('hidden');
+            document.getElementById('confirmation').classList.remove('hidden');
             form.reset();
 
         } catch (error) {
-            alert(`Error al enviar: ${error.message || 'Por favor intente nuevamente'}`);
-            console.error('Error:', error);
+            alert(`❌ Error: ${error.message || 'Por favor inténtalo de nuevo'}`);
+            console.error("Error detallado:", error);
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Enviar Solicitud';
@@ -52,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function copyToClipboard() {
-    const trackingId = document.getElementById('trackingId').textContent;
-    navigator.clipboard.writeText(trackingId);
-    alert('ID copiado: ' + trackingId);
+    const id = document.getElementById('trackingId').textContent;
+    navigator.clipboard.writeText(id);
+    alert(`✔️ Copiado: ${id}`);
 }
