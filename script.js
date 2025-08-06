@@ -71,13 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     apellidos: apellidos,
                     email: formData.get('email'),
                     telefono: phoneInput.getNumber(),
-                    fecha: new Date(formData.get('fecha')).toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    }),
+                    fecha: formatDateForEmail(formData.get('fecha')), // Función corregida
                     mensaje: formData.get('mensaje'),
-                    reply_to: formData.get('email')
+                    reply_to: formData.get('email'),
+                    año_actual: new Date().getFullYear()
                 }
             );
             
@@ -96,6 +93,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar botón copiar ID
     document.getElementById('corporateCopyBtn')?.addEventListener('click', copyTrackingId);
 });
+
+// Función para formatear la fecha en formato DD-MM-YYYY
+function formatDateForEmail(dateString) {
+    if (!dateString) return 'No especificada';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+    
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${day}-${month}-${year}`;
+}
 
 // Generar ID de seguimiento profesional
 function generateTrackingId() {
