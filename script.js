@@ -1,42 +1,60 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('serviceForm');
-    const trackingID = document.getElementById('trackingID');
-    const idGenerado = document.getElementById('idGenerado');
-    const submitBtn = document.getElementById('submitBtn');
-    const copyBtn = document.getElementById('copyButton');
+    const confirmation = document.getElementById('confirmation');
+    const displayId = document.getElementById('displayId');
+    const trackingInput = document.getElementById('tracking_id');
+
+    // Generar ID único al cargar
+    const generateID = () => {
+        const datePart = Date.now().toString(36).toUpperCase();
+        const randomPart = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        return `SOL-${datePart}-${randomPart}`;
+    };
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Deshabilitar botón durante el envío
+        const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Enviando...';
-        
-        // Generar ID único
-        const newId = `SOL-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
-        
+
+        // Generar y asignar ID
+        const trackingId = generateID();
+        trackingInput.value = trackingId;
+
         try {
-            // Enviar a Netlify
+            // 1. Enviar a Netlify Forms
             const formData = new FormData(form);
-            formData.append('tracking_id', newId);
-            
             await fetch('/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(formData),
             });
-            
-            // Mostrar ID
-            idGenerado.textContent = newId;
-            trackingID.classList.remove('hidden');
-            
-            // Copiar al portapapeles
-            copyBtn.addEventListener('click', () => {
-                navigator.clipboard.writeText(newId);
-                copyBtn.textContent = '¡Copiado!';
-                setTimeout(() => copyBtn.textContent = 'Copiar ID', 2000);
+
+            // 2. Enviar correo via EmailJS (usando la plantilla que te funcionaba)
+            await emailjs.send(
+                'service_puvhyly', // Tu servicio ID
+                'template_hskgq77', // Tu template ID
+                {
+                    tracking_id: trackingId,
+                    nombre: formData.get('nombre'),
+                    email: formData.get('email'),
+                    telefono: formData.get('telefono'),
+                    detalles: formData.get('detalles')
+                }
+            );
+
+            // Mostrar confirmación
+            displayId.textContent = trackingId;
+            confirmation.classList.remove('hidden');
+            form.reset();
+
+            // Configurar botón copiar
+            document.getElementById('copyBtn').addEventListener('click', () => {
+                navigator.clipboard.writeText(trackingId);
+                alert('ID copiado al portapapeles');
             });
-            
+
         } catch (error) {
             alert('Error al enviar: ' + error.message);
         } finally {
