@@ -1,68 +1,68 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitud con Fecha</title>
-    <link rel="stylesheet" href="estilos.css">
-</head>
-<body>
-    <div class="form-container">
-        <h1>Solicitud con Fecha</h1>
-        
-        <form id="date-form">
-            <div class="flex-container">
-                <div class="flex-item form-group">
-                    <label for="client-name">Nombre completo</label>
-                    <input type="text" id="client-name" required>
-                    <div class="error-message" id="name-error">Este campo es requerido</div>
-                </div>
-                
-                <div class="flex-item form-group">
-                    <label for="client-email">Correo electrónico</label>
-                    <input type="email" id="client-email" required>
-                    <div class="error-message" id="email-error">Ingresa un email válido</div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="service-date">Fecha requerida</label>
-                <input type="date" id="service-date" required>
-                <div class="error-message" id="date-error">Selecciona una fecha</div>
-            </div>
-            
-            <div class="form-group">
-                <label for="client-message">Detalles de tu solicitud</label>
-                <textarea id="client-message" required></textarea>
-                <div class="error-message" id="message-error">Describe tu solicitud</div>
-            </div>
-            
-            <div class="form-group">
-                <button type="button" id="generate-id" class="btn btn-secondary">
-                    Generar ID de Solicitud
-                </button>
-            </div>
-            
-            <div id="id-container" class="id-container">
-                <div>
-                    <p>Tu ID de seguimiento:</p>
-                    <p id="id-display" class="id-value"></p>
-                    <p class="id-instructions">Copia este código para futuras consultas</p>
-                </div>
-            </div>
-            
-            <input type="hidden" id="solicitud-id">
-            
-            <div class="form-group" style="margin-top: 10px;">
-                <button type="submit" id="submit-btn" class="btn" disabled>
-                    Enviar Solicitud
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="script.js"></script>
-</body>
+<!doctype html>
+<html lang="es"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Solicitud de Servicio Profesional</title> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+  <link rel="stylesheet" href="estilos.css"> 
+ </head> 
+ <body> 
+  <div class="form-wrapper"> 
+   <div class="form-header"> 
+    <h1><i class="fas fa-calendar-alt"></i> Solicitud de Servicio</h1> 
+    <p>Complete el formulario para generar su ID único</p> 
+   </div> 
+   <form id="service-form" class="modern-form"> 
+    <div class="form-group duo-inputs"> 
+     <div class="input-group"> <label for="client-name"><i class="fas fa-user"></i> Nombre completo</label> 
+      <input type="text" id="client-name" placeholder="Ej: Juan Pérez" required> 
+      <div class="error-message" id="name-error"> <i class="fas fa-exclamation-circle"></i> Este campo es requerido 
+      </div> 
+     </div> 
+     <div class="input-group"> <label for="client-email"><i class="fas fa-envelope"></i> Correo electrónico</label> 
+      <input type="email" id="client-email" placeholder="ejemplo@correo.com" required> 
+      <div class="error-message" id="email-error"> <i class="fas fa-exclamation-circle"></i> Ingresa un email válido 
+      </div> 
+     </div> 
+    </div> 
+    <div class="form-group"> <label for="phone-number"><i class="fas fa-phone"></i> Teléfono de contacto</label> 
+     <div class="phone-input"> <select id="country-code" class="country-select"> <option value="" disabled selected>Código</option> <option value="+51">🇵🇪 +51 Perú</option> <option value="+1">🇺🇸 +1 USA</option> <option value="+52">🇲🇽 +52 México</option> <option value="+54">🇦🇷 +54 Argentina</option> <option value="+56">🇨🇱 +56 Chile</option> <option value="+57">🇨🇴 +57 Colombia</option> <option value="other">Otro código</option> </select> 
+      <input type="tel" id="phone-number" placeholder="Número telefónico" required> 
+     </div> 
+     <div class="error-message" id="phone-error"> <i class="fas fa-exclamation-circle"></i> Ingresa un número válido 
+     </div> 
+    </div> 
+    <div class="form-group"> <label for="service-date"><i class="far fa-calendar"></i> Fecha requerida</label> 
+     <input type="date" id="service-date" required> 
+     <div class="error-message" id="date-error"> <i class="fas fa-exclamation-circle"></i> Selecciona una fecha 
+     </div> 
+    </div> 
+    <div class="form-group"> <label for="client-message"><i class="fas fa-comment"></i> Detalles de tu solicitud</label> <textarea id="client-message" placeholder="Describe con detalle lo que necesitas..." required></textarea> 
+     <div class="error-message" id="message-error"> <i class="fas fa-exclamation-circle"></i> Describe tu solicitud 
+     </div> 
+    </div> 
+    <div class="form-group"> <button type="button" id="generate-id" class="btn generate-btn"> <i class="fas fa-id-card"></i> Generar ID de Solicitud </button> 
+    </div> 
+    <div id="id-container" class="id-card"> 
+     <div class="id-header"> <i class="fas fa-id-badge"></i> <span>ID de Seguimiento</span> 
+     </div> 
+     <div id="id-display" class="id-number">
+       XXXX-XXXX-XXXX 
+     </div> 
+     <div class="id-footer"> <button id="copy-id" class="btn copy-btn"> <i class="far fa-copy"></i> Copiar </button> 
+     </div> 
+    </div> 
+    <input type="hidden" id="solicitud-id"> 
+    <div class="form-group submit-group"> <button type="submit" id="submit-btn" class="btn submit-btn" disabled> <i class="fas fa-paper-plane"></i> Enviar Solicitud </button> 
+    </div> 
+   </form> 
+   <div class="form-footer"> 
+    <p><i class="fas fa-lock"></i> Tus datos están protegidos</p> 
+    <p class="support-text">¿Necesitas ayuda? <a href="#"><i class="fas fa-headset"></i> Contáctanos</a></p> 
+   </div> 
+  </div> 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script> 
+  <script src="script.js"></script> 
+ </body>
 </html>
