@@ -1,19 +1,1 @@
-[build]
-  command = "echo 'No se requiere build para HTML estático'"
-  publish = "."  # Busca los archivos en la raíz del proyecto
 
-# Configuración específica para formularios
-[context.production.environment]
-  # Variables de entorno (opcionales, si usas EmailJS o similares)
-  EMAILJS_USER_ID = "tu_user_id_de_emailjs"  # Reemplaza con tu ID real
-
-# Redirecciones y manejo de rutas (útil para SPAs)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Configuración de funciones serverless (si usas Netlify Functions)
-[functions]
-  directory = "netlify/functions"  # Ruta donde estarían tus funciones
-  node_bundler = "esbuild"  # Optimiza el rendimiento
