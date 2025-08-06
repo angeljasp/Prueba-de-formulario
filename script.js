@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     apellidos: apellidos,
                     email: formData.get('email'),
                     telefono: phoneInput.getNumber(),
-                    fecha: formatDateForEmail(formData.get('fecha')), // Función corregida
                     mensaje: formData.get('mensaje'),
                     reply_to: formData.get('email'),
                     año_actual: new Date().getFullYear()
