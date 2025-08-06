@@ -2,102 +2,201 @@
     --primary: #2c3e50;
     --secondary: #3498db;
     --success: #27ae60;
+    --error: #e74c3c;
+    --text: #333;
+    --light-gray: #f5f7fa;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--light-gray);
     margin: 0;
     padding: 20px;
+    color: var(--text);
     line-height: 1.6;
 }
 
 .form-container {
     max-width: 600px;
     margin: 40px auto;
-    padding: 30px;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
 
-h1 {
-    color: var(--primary);
+.form-header {
+    padding: 25px;
+    background: var(--primary);
+    color: white;
     text-align: center;
-    margin-bottom: 10px;
+}
+
+.form-header h1 {
+    margin: 15px 0 0;
+    font-size: 1.8rem;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+form {
+    padding: 25px;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
 label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
+    font-size: 0.95rem;
     color: var(--primary);
 }
 
-input, textarea {
+input, select {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border 0.3s;
+    padding: 14px;
+    border: 2px solid #e0e3e7;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
-input:focus, textarea:focus {
+input:focus {
     border-color: var(--secondary);
     outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
-textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-button {
+#submitBtn {
+    position: relative;
     background: var(--secondary);
     color: white;
     border: none;
-    padding: 14px;
-    font-size: 16px;
-    border-radius: 5px;
+    padding: 16px;
+    width: 100%;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+#submitBtn:hover {
+    background: #2980b9;
+}
+
+#submitBtn .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    opacity: 0;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+#submitBtn.loading .button-text {
+    visibility: hidden;
+}
+
+#submitBtn.loading .spinner {
+    opacity: 1;
+}
+
+/* Confirmación */
+#confirmation {
+    padding: 25px;
+    text-align: center;
+    display: none;
+}
+
+.success-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    background: var(--success);
+    color: white;
+    border-radius: 50%;
+    font-size: 30px;
+    line-height: 60px;
+    animation: bounceIn 0.6s;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+#confirmation h3 {
+    color: var(--success);
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+}
+
+#confirmation p {
+    margin: 0 0 20px;
+    font-size: 1.1rem;
+}
+
+.copy-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
     cursor: pointer;
     transition: background 0.3s;
 }
 
-button:hover {
-    background: #2980b9;
+.copy-button:hover {
+    background: #1a2634;
 }
 
-.hidden {
-    display: none;
+.copy-button svg {
+    margin-top: 2px;
 }
 
-#confirmation {
-    background: #e8f5e9;
-    padding: 20px;
-    border-radius: 5px;
-    margin-top: 25px;
-    text-align: center;
-    border-left: 4px solid var(--success);
-    animation: fadeIn 0.5s;
+/* Selector de teléfono */
+.iti {
+    width: 100%;
 }
 
-.small {
-    font-size: 14px;
-    color: #666;
+.iti__flag-container {
+    padding: 0 10px 0 15px;
 }
 
-.footer {
-    text-align: center;
-    margin-top: 30px;
-    color: #7f8c8d;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Responsive */
+@media (max-width: 640px) {
+    .form-container {
+        margin: 20px auto;
+        border-radius: 0;
+    }
+    
+    .form-header {
+        padding: 20px 15px;
+    }
+    
+    form {
+        padding: 20px 15px;
+    }
 }
