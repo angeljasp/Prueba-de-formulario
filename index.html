@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitud de Servicio - JASPIJPI</title>
     <link rel="stylesheet" href="./styles.css">
-    <!-- EmailJS -->
+    <!-- EmailJS con tu clave pública -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        emailjs.init('TU_USER_ID_EMAILJS'); // Reemplaza con tu ID real
+        emailjs.init('naOhhhdCRqiLYdV5P'); // Clave pública proporcionada
     </script>
 </head>
 <body>
     <div class="form-container">
-        <h1>Solicitud de Servicio</h1>
-        <p>Complete el formulario para generar su ID único</p>
+        <h1>📋 Solicitud de Servicio</h1>
+        <p>Complete todos los campos obligatorios (*)</p>
 
-        <form id="serviceForm" name="solicitud-servicio" netlify data-netlify="true">
-            <input type="hidden" name="form-name" value="solicitud-servicio">
+        <form id="serviceForm" name="solicitud-jaspijpi" netlify data-netlify="true">
+            <input type="hidden" name="form-name" value="solicitud-jaspijpi">
 
             <div class="form-group">
                 <label for="nombre">Nombre completo*</label>
@@ -30,26 +30,26 @@
             </div>
 
             <div class="form-group">
-                <label for="telefono">Teléfono de contacto*</label>
+                <label for="telefono">Teléfono*</label>
                 <input type="tel" id="telefono" name="telefono" required>
             </div>
 
             <div class="form-group">
-                <label for="detalles">Detalles de tu solicitud*</label>
-                <textarea id="detalles" name="detalles" rows="4" required></textarea>
+                <label for="detalles">Detalles de la solicitud*</label>
+                <textarea id="detalles" name="detalles" rows="5" required></textarea>
             </div>
 
             <button type="submit" id="submitBtn">Enviar Solicitud</button>
         </form>
 
         <div id="confirmation" class="hidden">
-            <h3>✅ Solicitud enviada</h3>
+            <h3>✅ ¡Solicitud enviada con éxito!</h3>
             <p>ID de seguimiento: <strong id="trackingId"></strong></p>
-            <button onclick="copyToClipboard()">Copiar ID</button>
-            <p>Recibirá un correo de confirmación shortly.</p>
+            <button onclick="copyToClipboard()">📋 Copiar ID</button>
+            <p class="small">Revisa tu correo electrónico para más detalles.</p>
         </div>
 
-        <p class="footer">¿Necesitas ayuda? <a href="mailto:soporte@jaspijpi.com">💬 Contáctanos</a></p>
+        <p class="footer">¿Necesitas ayuda? <a href="mailto:soporte@jaspijpi.com">✉️ Contactar soporte</a></p>
     </div>
 
     <script src="./script.js"></script>
