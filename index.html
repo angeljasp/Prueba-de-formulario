@@ -3,63 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario JASPIJPI</title>
+    <title>Formulario Corporativo | JASPIJPI Holding</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-header">
-            <img src="https://via.placeholder.com/150x50?text=JASPIJPI+Logo" alt="Logo JASPIJPI" class="logo">
-            <h1>Formulario de Contacto</h1>
-        </div>
-
-        <form id="contactForm" name="contacto-jaspijpi" netlify data-netlify="true">
-            <input type="hidden" name="form-name" value="contacto-jaspijpi">
-
-            <!-- Campos del formulario -->
-            <div class="form-group">
-                <label for="nombres">Nombres* (2 nombres mínimo)</label>
-                <input type="text" id="nombres" name="nombres" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ ]{3,}( [A-Za-záéíóúñÁÉÍÓÚÑ ]{3,})+" title="Ingrese al menos 2 nombres" required>
+    <div class="corporate-container">
+        <!-- Header Corporativo -->
+        <header class="corporate-header">
+            <div class="logo-container">
+                <img src="https://via.placeholder.com/180x50?text=JASPIJPI+Global" alt="JASPIJPI Holding" class="corporate-logo">
+                <h1 class="corporate-title">Portal de Solicitudes</h1>
             </div>
+            <div class="header-decoration"></div>
+        </header>
 
-            <div class="form-group">
-                <label for="apellidos">Apellidos* (2 apellidos mínimo)</label>
-                <input type="text" id="apellidos" name="apellidos" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ ]{3,}( [A-Za-záéíóúñÁÉÍÓÚÑ ]{3,})+" title="Ingrese al menos 2 apellidos" required>
+        <!-- Formulario -->
+        <main class="corporate-form-container">
+            <form id="corporateForm" name="solicitud-corporativa" netlify data-netlify="true">
+                <input type="hidden" name="form-name" value="solicitud-corporativa">
+
+                <!-- Sección de Datos Personales -->
+                <fieldset class="form-section">
+                    <legend class="section-title">
+                        <span class="section-number">1</span>
+                        Información Personal
+                    </legend>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="corporate-names">Nombres*</label>
+                            <input type="text" id="corporate-names" name="nombres" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ ]{3,}( [A-Za-záéíóúñÁÉÍÓÚÑ ]{3,})+" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="corporate-lastnames">Apellidos*</label>
+                            <input type="text" id="corporate-lastnames" name="apellidos" pattern="[A-Za-záéíóúñÁÉÍÓÚÑ ]{3,}( [A-Za-záéíóúñÁÉÍÓÚÑ ]{3,})+" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="corporate-email">Correo Corporativo*</label>
+                            <input type="email" id="corporate-email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="corporate-phone">Teléfono*</label>
+                            <input type="tel" id="corporate-phone" name="telefono" required>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Sección de Solicitud -->
+                <fieldset class="form-section">
+                    <legend class="section-title">
+                        <span class="section-number">2</span>
+                        Detalles de la Solicitud
+                    </legend>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="corporate-date">Fecha Requerida*</label>
+                            <input type="date" id="corporate-date" name="fecha" required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="corporate-message">Mensaje/Requerimiento*</label>
+                            <textarea id="corporate-message" name="mensaje" rows="5" required></textarea>
+                            <p class="hint-text">Describa su solicitud con el mayor detalle posible</p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Botón de Envío -->
+                <div class="form-actions">
+                    <button type="submit" id="corporateSubmitBtn" class="corporate-button">
+                        <span class="button-text">Enviar Solicitud</span>
+                        <span class="button-spinner"></span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Confirmación -->
+            <div id="corporateConfirmation" class="confirmation-panel hidden">
+                <div class="confirmation-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <h3>Solicitud Registrada Exitosamente</h3>
+                <div class="tracking-id">
+                    <span>ID de Seguimiento:</span>
+                    <strong id="corporateTrackingId"></strong>
+                </div>
+                <button id="corporateCopyBtn" class="corporate-copy-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copiar ID
+                </button>
+                <p class="confirmation-text">
+                    Hemos enviado un resumen a su correo electrónico. Nuestro equipo se contactará con usted en un plazo de 24 horas.
+                </p>
             </div>
+        </main>
 
-            <div class="form-group">
-                <label for="email">Correo electrónico*</label>
-                <input type="email" id="email" name="email" required>
+        <!-- Footer Corporativo -->
+        <footer class="corporate-footer">
+            <p>© <span id="current-year"></span> JASPIJPI Holding International. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="#">Términos de Servicio</a>
+                <a href="#">Política de Privacidad</a>
+                <a href="#">Contacto Global</a>
             </div>
-
-            <div class="form-group">
-                <label for="telefono">Teléfono*</label>
-                <input type="tel" id="telefono" name="telefono" required>
-            </div>
-
-            <div class="form-group">
-                <label for="fecha">Fecha de solicitud*</label>
-                <input type="date" id="fecha" name="fecha" required>
-            </div>
-
-            <button type="submit" id="submitBtn">
-                <span class="button-text">Enviar Solicitud</span>
-                <span class="spinner hidden"></span>
-            </button>
-        </form>
-
-        <div id="confirmation" class="hidden">
-            <div class="success-icon">✓</div>
-            <h3>Solicitud Registrada</h3>
-            <p>ID de seguimiento: <strong id="trackingId"></strong></p>
-            <button id="copyBtn" class="copy-button">
-                <span>Copiar ID</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M8 17.929H6c-1.105 0-2-.912-2-2.036V5.036C4 3.91 4.895 3 6 3h8c1.105 0 2 .911 2 2.036v1.866m-6 .17h8c1.105 0 2 .91 2 2.035v10.857C20 21.09 19.105 22 18 22h-8c-1.105 0-2-.911-2-2.036V9.107c0-1.124.895-2.036 2-2.036z"></path>
-                </svg>
-            </button>
-        </div>
+        </footer>
     </div>
 
     <!-- Scripts -->
