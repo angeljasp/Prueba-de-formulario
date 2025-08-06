@@ -1,88 +1,57 @@
-:root {
-    --primary: #2c3e50;
-    --secondary: #3498db;
-    --success: #27ae60;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('serviceForm');
+    const submitBtn = document.getElementById('submitBtn');
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f5f7fa;
-    margin: 0;
-    padding: 20px;
-    color: #333;
-}
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
 
-.form-container {
-    max-width: 600px;
-    margin: 30px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+        // Generar ID único (ej: "JASPI-1A2B3C")
+        const trackingId = `JASPI-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
 
-h1 {
-    color: var(--primary);
-    text-align: center;
-    margin-bottom: 20px;
-}
+        try {
+            // 1. Enviar a Netlify Forms
+            const formData = new FormData(form);
+            formData.append('tracking_id', trackingId);
+            
+            await fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(formData),
+            });
 
-.form-group {
-    margin-bottom: 20px;
-}
+            // 2. Enviar correo con EmailJS (usando tus datos)
+            await emailjs.send(
+                'service_wy6vkhd', // Service ID
+                'template_wmugv6o', // Template ID
+                {
+                    tracking_id: trackingId,
+                    nombre: formData.get('nombre'),
+                    email: formData.get('email'),
+                    telefono: formData.get('telefono'),
+                    detalles: formData.get('detalles'),
+                    reply_to: formData.get('email') // Para respuestas
+                }
+            );
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--primary);
-}
+            // Mostrar confirmación
+            document.getElementById('trackingId').textContent = trackingId;
+            document.getElementById('confirmation').classList.remove('hidden');
+            form.reset();
 
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-}
+        } catch (error) {
+            alert(`❌ Error: ${error.message || 'Por favor inténtalo de nuevo'}`);
+            console.error("Error detallado:", error);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Solicitud';
+        }
+    });
+});
 
-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-button {
-    background: var(--secondary);
-    color: white;
-    border: none;
-    padding: 14px;
-    width: 100%;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-button:hover {
-    background: #2980b9;
-}
-
-.hidden {
-    display: none;
-}
-
-#confirmation {
-    background: #e8f5e9;
-    padding: 20px;
-    border-radius: 5px;
-    margin-top: 20px;
-    text-align: center;
-    border-left: 4px solid var(--success);
-}
-
-.footer {
-    text-align: center;
-    margin-top: 30px;
-    color: #7f8c8d;
-    font-size: 14px;
+function copyToClipboard() {
+    const id = document.getElementById('trackingId').textContent;
+    navigator.clipboard.writeText(id);
+    alert(`✔️ Copiado: ${id}`);
 }
