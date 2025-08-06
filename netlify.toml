@@ -1,64 +1,19 @@
 [build]
-  command = "echo 'Build no requerido para HTML estático'"
-  publish = "."
+  command = "echo 'No se requiere build para HTML estático'"
+  publish = "."  # Busca los archivos en la raíz del proyecto
 
+# Configuración específica para formularios
+[context.production.environment]
+  # Variables de entorno (opcionales, si usas EmailJS o similares)
+  EMAILJS_USER_ID = "tu_user_id_de_emailjs"  # Reemplaza con tu ID real
+
+# Redirecciones y manejo de rutas (útil para SPAs)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# Configuración de funciones serverless (si usas Netlify Functions)
 [functions]
-  directory = "netlify/functions"
-
-  const nodemailer = require('nodemailer');
-
-exports.handler = async (event) => {
-    if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: 'Método no permitido' };
-    }
-
-    const params = new URLSearchParams(event.body);
-    const data = {
-        nombre: params.get('nombre'),
-        email: params.get('email'),
-        telefono: params.get('telefono'),
-        tracking_id: params.get('tracking_id')
-    };
-
-    // Configurar transporte (usa tu SMTP real)
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
-
-    try {
-        await transporter.sendMail({
-            from: `"Formulario Web" <${process.env.EMAIL_USER}>`,
-            to: process.env.ADMIN_EMAIL,
-            subject: `Nueva solicitud: ${data.tracking_id}`,
-            html: `
-                <h2>Nueva solicitud de servicio</h2>
-                <p><strong>ID:</strong> ${data.tracking_id}</p>
-                <p><strong>Nombre:</strong> ${data.nombre}</p>
-                <p><strong>Email:</strong> ${data.email}</p>
-                <p><strong>Teléfono:</strong> ${data.telefono}</p>
-                <p>Revisa el panel de Netlify para más detalles.</p>
-            `
-        });
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'Correo enviado con éxito' })
-        };
-    } catch (error) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: 'Error al enviar el correo' })
-        };
-    }
-};
+  directory = "netlify/functions"  # Ruta donde estarían tus funciones
+  node_bundler = "esbuild"  # Optimiza el rendimiento
