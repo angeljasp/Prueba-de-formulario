@@ -1,41 +1,52 @@
-// Inicialización
-document.addEventListener('DOMContentLoaded', () => {
-    // Configura EmailJS
+// Inicialización cuando el DOM está listo
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar año actual en el footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    
+    // Inicializar EmailJS con tu clave pública
     emailjs.init('naOhhhdCRqiLYdV5P');
     
-    // Selector internacional de teléfono
-    const phoneInput = window.intlTelInput(document.querySelector("#telefono"), {
+    // Configurar selector de teléfono internacional
+    const phoneInput = window.intlTelInput(document.getElementById('corporate-phone'), {
         initialCountry: "auto",
-        geoIpLookup: callback => {
-            fetch("https://ipapi.co/json")
-                .then(res => res.json())
-                .then(data => callback(data.country_code))
-                .catch(() => callback("ec")); // Ecuador como fallback
+        geoIpLookup: function(callback) {
+            fetch('https://ipapi.co/json')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    callback(data.country_code);
+                })
+                .catch(function() {
+                    callback('us'); // Fallback a EE.UU.
+                });
         },
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-        separateDialCode: true
+        preferredCountries: ['ec', 'us', 'co', 'pe', 'mx', 'es'],
+        separateDialCode: true,
+        hiddenInput: "full_phone",
     });
-
-    // Manejo del formulario
-    const form = document.getElementById('contactForm');
-    const submitBtn = document.getElementById('submitBtn');
     
-    form.addEventListener('submit', async (e) => {
+    // Manejar envío del formulario
+    const form = document.getElementById('corporateForm');
+    const submitBtn = document.getElementById('corporateSubmitBtn');
+    
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Validación adicional de nombres/apellidos
-        const nombres = document.getElementById('nombres').value.trim();
-        const apellidos = document.getElementById('apellidos').value.trim();
+        // Validar nombres y apellidos
+        const nombres = document.getElementById('corporate-names').value.trim();
+        const apellidos = document.getElementById('corporate-lastnames').value.trim();
         
         if (nombres.split(' ').length < 2 || apellidos.split(' ').length < 2) {
-            alert("Por favor ingrese al menos 2 nombres y 2 apellidos completos");
+            alert('Por favor ingrese al menos 2 nombres y 2 apellidos completos');
             return;
         }
-
+        
         // Mostrar estado de carga
         submitBtn.classList.add('loading');
         
-        // Generar ID profesional (ej: JASPI-1A2B3C-456)
+        // Generar ID de seguimiento profesional
         const trackingId = generateTrackingId();
         
         try {
@@ -49,11 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(formData),
             });
-
+            
             // 2. Enviar correo con EmailJS
             await emailjs.send(
                 'service_wy6vkhd',
-                'template_wmugv6o', 
+                'template_wmugv6o',
                 {
                     tracking_id: trackingId,
                     nombres: nombres,
@@ -65,55 +76,72 @@ document.addEventListener('DOMContentLoaded', () => {
                         month: 'long',
                         day: 'numeric'
                     }),
+                    mensaje: formData.get('mensaje'),
                     reply_to: formData.get('email')
                 }
             );
-
+            
             // Mostrar confirmación
             showConfirmation(trackingId);
             form.reset();
             
         } catch (error) {
-            console.error("Error completo:", error);
-            alert(`Error al enviar: ${error.message || 'Por favor intente nuevamente'}`);
+            console.error('Error completo:', error);
+            showError('Ocurrió un error al enviar el formulario. Por favor intente nuevamente.');
         } finally {
             submitBtn.classList.remove('loading');
         }
     });
-
-    // Botón copiar ID
-    document.getElementById('copyBtn')?.addEventListener('click', copyToClipboard);
+    
+    // Configurar botón copiar ID
+    document.getElementById('corporateCopyBtn')?.addEventListener('click', copyTrackingId);
 });
 
 // Generar ID de seguimiento profesional
 function generateTrackingId() {
     const datePart = new Date().getTime().toString(36).toUpperCase();
-    const randomPart = Math.floor(Math.random() * 900 + 100); // Número entre 100-999
+    const randomPart = Math.floor(Math.random() * 900) + 100; // Número entre 100-999
     return `JASPI-${datePart}-${randomPart}`;
 }
 
-// Mostrar sección de confirmación
+// Mostrar panel de confirmación
 function showConfirmation(trackingId) {
-    const confirmation = document.getElementById('confirmation');
-    const trackingElement = document.getElementById('trackingId');
+    const confirmationPanel = document.getElementById('corporateConfirmation');
+    const trackingElement = document.getElementById('corporateTrackingId');
     
     trackingElement.textContent = trackingId;
-    confirmation.style.display = 'block';
+    confirmationPanel.classList.remove('hidden');
     
     // Scroll suave a la confirmación
-    confirmation.scrollIntoView({ behavior: 'smooth' });
+    confirmationPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Copiar ID al portapapeles
-function copyToClipboard() {
-    const id = document.getElementById('trackingId').textContent;
-    navigator.clipboard.writeText(id);
+// Copiar ID de seguimiento
+function copyTrackingId() {
+    const trackingId = document.getElementById('corporateTrackingId').textContent;
+    navigator.clipboard.writeText(trackingId);
     
-    const copyBtn = document.getElementById('copyBtn');
-    const originalText = copyBtn.querySelector('span').textContent;
-    
-    copyBtn.querySelector('span').textContent = '¡Copiado!';
-    copyBtn.style.backgroundColor = '#27ae60';
+    const copyBtn = document.getElementById('corporateCopyBtn');
+    copyBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        ¡Copiado!
+    `;
     
     setTimeout(() => {
-        copyBtn.querySelector('span').textContent = original
+        copyBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copiar ID
+        `;
+    }, 2000);
+}
+
+// Mostrar mensaje de error
+function showError(message) {
+    alert(message);
+}
