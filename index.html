@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud con Fecha</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Solicitud con Fecha</h1>
+        
+        <form id="date-form">
+            <div class="flex-container">
+                <div class="flex-item form-group">
+                    <label for="client-name">Nombre completo</label>
+                    <input type="text" id="client-name" required>
+                    <div class="error-message" id="name-error">Este campo es requerido</div>
+                </div>
+                
+                <div class="flex-item form-group">
+                    <label for="client-email">Correo electrónico</label>
+                    <input type="email" id="client-email" required>
+                    <div class="error-message" id="email-error">Ingresa un email válido</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="service-date">Fecha requerida</label>
+                <input type="date" id="service-date" required>
+                <div class="error-message" id="date-error">Selecciona una fecha</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="client-message">Detalles de tu solicitud</label>
+                <textarea id="client-message" required></textarea>
+                <div class="error-message" id="message-error">Describe tu solicitud</div>
+            </div>
+            
+            <div class="form-group">
+                <button type="button" id="generate-id" class="btn btn-secondary">
+                    Generar ID de Solicitud
+                </button>
+            </div>
+            
+            <div id="id-container" class="id-container">
+                <div>
+                    <p>Tu ID de seguimiento:</p>
+                    <p id="id-display" class="id-value"></p>
+                    <p class="id-instructions">Copia este código para futuras consultas</p>
+                </div>
+            </div>
+            
+            <input type="hidden" id="solicitud-id">
+            
+            <div class="form-group" style="margin-top: 10px;">
+                <button type="submit" id="submit-btn" class="btn" disabled>
+                    Enviar Solicitud
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
