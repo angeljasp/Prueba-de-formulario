@@ -1,60 +1,58 @@
-document.getElementById('serviceForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const submitBtn = e.target.querySelector('button[type="submit"]');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Enviando...';
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('serviceForm');
+    const confirmation = document.getElementById('confirmation');
+    const submitBtn = document.getElementById('submitBtn');
 
-  try {
-    // 1. Enviar a Netlify
-    const formData = new FormData(e.target);
-    await fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData),
-    });
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
 
-    // 2. Enviar correo via EmailJS (solo si está configurado)
-    if (typeof emailjs !== 'undefined') {
-      await emailjs.send(
-        'service_puvhyly', 
-        'template_hskgq77', 
-        {
-          nombre: formData.get('nombre'),
-          email: formData.get('email'),
-          telefono: formData.get('telefono'),
-          detalles: formData.get('detalles'),
-        }
-      );
-    }
+        // Generar ID de seguimiento
+        const trackingId = `JASPI-${Date.now().toString(36).toUpperCase()}`;
+        
+        try {
+            // 1. Enviar a Netlify Forms
+            const formData = new FormData(form);
+            formData.append('tracking_id', trackingId);
+            
+            await fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(formData),
+            });
 
-    // Redirigir a página de éxito o mostrar mensaje
-    alert('¡Formulario enviado con éxito!');
-    window.location.href = "/gracias.html"; // Opcional
+            // 2. Enviar correo via EmailJS
+            await emailjs.send(
+                'service_wy6vkhd', // Nuevo service ID
+                'template_wmugv6o', // Nuevo template ID
+                {
+                    tracking_id: trackingId,
+                    nombre: formData.get('nombre'),
+                    email: formData.get('email'),
+                    telefono: formData.get('telefono'),
+                    detalles: formData.get('detalles'),
+                    reply_to: formData.get('email')
+                }
+            );
 
-  } catch (error) {
-    console.error('Error:', error);
-    alert(`Error al enviar: ${error.message || 'Por favor intenta nuevamente'}`);
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Enviar Solicitud';
-  }
-});
             // Mostrar confirmación
-            displayId.textContent = trackingId;
+            document.getElementById('trackingId').textContent = trackingId;
             confirmation.classList.remove('hidden');
             form.reset();
 
-            // Configurar botón copiar
-            document.getElementById('copyBtn').addEventListener('click', () => {
-                navigator.clipboard.writeText(trackingId);
-                alert('ID copiado al portapapeles');
-            });
-
         } catch (error) {
-            alert('Error al enviar: ' + error.message);
+            alert(`Error al enviar: ${error.message || 'Por favor intente nuevamente'}`);
+            console.error('Error:', error);
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Enviar Solicitud';
         }
     });
 });
+
+function copyToClipboard() {
+    const trackingId = document.getElementById('trackingId').textContent;
+    navigator.clipboard.writeText(trackingId);
+    alert('ID copiado: ' + trackingId);
+}
