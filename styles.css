@@ -1,57 +1,103 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('serviceForm');
-    const submitBtn = document.getElementById('submitBtn');
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --success: #27ae60;
+}
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enviando...';
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
 
-        // Generar ID único (ej: "JASPI-1A2B3C")
-        const trackingId = `JASPI-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+.form-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-        try {
-            // 1. Enviar a Netlify Forms
-            const formData = new FormData(form);
-            formData.append('tracking_id', trackingId);
-            
-            await fetch('/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(formData),
-            });
+h1 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-            // 2. Enviar correo con EmailJS (usando tus datos)
-            await emailjs.send(
-                'service_wy6vkhd', // Service ID
-                'template_wmugv6o', // Template ID
-                {
-                    tracking_id: trackingId,
-                    nombre: formData.get('nombre'),
-                    email: formData.get('email'),
-                    telefono: formData.get('telefono'),
-                    detalles: formData.get('detalles'),
-                    reply_to: formData.get('email') // Para respuestas
-                }
-            );
+.form-group {
+    margin-bottom: 20px;
+}
 
-            // Mostrar confirmación
-            document.getElementById('trackingId').textContent = trackingId;
-            document.getElementById('confirmation').classList.remove('hidden');
-            form.reset();
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--primary);
+}
 
-        } catch (error) {
-            alert(`❌ Error: ${error.message || 'Por favor inténtalo de nuevo'}`);
-            console.error("Error detallado:", error);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Enviar Solicitud';
-        }
-    });
-});
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border 0.3s;
+}
 
-function copyToClipboard() {
-    const id = document.getElementById('trackingId').textContent;
-    navigator.clipboard.writeText(id);
-    alert(`✔️ Copiado: ${id}`);
+input:focus, textarea:focus {
+    border-color: var(--secondary);
+    outline: none;
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+button {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+.hidden {
+    display: none;
+}
+
+#confirmation {
+    background: #e8f5e9;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 25px;
+    text-align: center;
+    border-left: 4px solid var(--success);
+    animation: fadeIn 0.5s;
+}
+
+.small {
+    font-size: 14px;
+    color: #666;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #7f8c8d;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
