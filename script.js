@@ -1,14 +1,40 @@
-document.getElementById('serviceForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Simular generación de ID (en producción, esto lo manejaría Netlify o tu backend)
-    const randomID = 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-    document.getElementById('idGenerado').textContent = randomID;
-    document.getElementById('trackingID').classList.remove('hidden');
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('serviceForm');
+    const trackingIDSection = document.getElementById('trackingID');
+    const submitBtn = document.getElementById('submitBtn');
 
-    // Copiar al portapapeles
-    document.getElementById('copyButton').addEventListener('click', function() {
-        navigator.clipboard.writeText(randomID);
-        alert('ID copiado: ' + randomID);
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+
+        // Generar ID único (simulado)
+        const randomID = 'SOL-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        document.getElementById('idGenerado').textContent = randomID;
+
+        // Enviar datos a Netlify
+        try {
+            const formData = new FormData(form);
+            await fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString(),
+            });
+
+            // Mostrar ID y botón de copiar
+            trackingIDSection.classList.remove('hidden');
+
+            // Configurar botón de copiar
+            document.getElementById('copyButton').addEventListener('click', function() {
+                navigator.clipboard.writeText(randomID);
+                alert('ID copiado: ' + randomID);
+            });
+
+        } catch (error) {
+            alert('Error al enviar: ' + error.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Solicitud';
+        }
     });
 });
