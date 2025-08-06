@@ -63,7 +63,7 @@ body {
 .corporate-header img {
     width: auto;
     height: auto;
-    max-height: 200px;
+    max-height: 250px;
     object-fit: contain;
     filter: brightness(0) invert(1);
     transition: all 0.3s ease;
