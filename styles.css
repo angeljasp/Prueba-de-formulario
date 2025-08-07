@@ -1,5 +1,4 @@
 :root {
-    /* Colores corporativos */
     --primary: #003366;
     --primary-light: #004080;
     --secondary: #00A0E1;
@@ -12,7 +11,6 @@
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Reset y Estilos Base */
 * {
     margin: 0;
     padding: 0;
@@ -27,16 +25,12 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Contenedor Principal */
 .corporate-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* ---------------------- */
-/* HEADER OPTIMIZADO */
-/* ---------------------- */
 .corporate-header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     padding: 2rem 5%;
@@ -60,7 +54,7 @@ body {
     gap: 0.8rem;
 }
 
-.corporate-header img {
+.header-logo {
     width: auto;
     height: auto;
     max-height: 250px;
@@ -88,9 +82,6 @@ body {
     z-index: 1;
 }
 
-/* ---------------------- */
-/* RESTANTE DEL CÓDIGO (IGUAL) */
-/* ---------------------- */
 .corporate-form-container {
     flex: 1;
     width: 100%;
@@ -312,6 +303,10 @@ textarea {
     line-height: 1.5;
 }
 
+.hidden {
+    display: none;
+}
+
 .corporate-footer {
     background-color: var(--primary);
     color: var(--white);
@@ -364,13 +359,12 @@ textarea {
     }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .corporate-header {
         padding: 1.5rem 5%;
     }
     
-    .corporate-header img {
+    .header-logo {
         max-height: 100px;
     }
     
@@ -401,4 +395,4 @@ textarea {
     .confirmation-panel {
         padding: 1.5rem;
     }
-}
+    }
