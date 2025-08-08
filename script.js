@@ -1,9 +1,72 @@
-// Inicialización cuando el DOM está listo
+// Script integrado
 document.addEventListener('DOMContentLoaded', function() {
     // Configurar año actual en el footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
-    // Inicializar EmailJS con tu clave pública
+    // Mobile Menu
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navigation = document.querySelector('.navigation');
+    
+    menuToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        navigation.classList.toggle('active');
+        
+        if (navigation.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Close menu when clicking on links
+    document.querySelectorAll('.navigation a').forEach(link => {
+        link.addEventListener('click', function() {
+            menuToggle.classList.remove('active');
+            navigation.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            if (this.getAttribute('href') === '#') {
+                e.preventDefault();
+                return;
+            }
+            
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Header scroll effect
+    const header = document.querySelector('.header');
+    
+    function updateHeader() {
+        if (window.scrollY > 100) {
+            header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        } else {
+            header.style.boxShadow = 'none';
+        }
+    }
+    
+    updateHeader();
+    window.addEventListener('scroll', updateHeader);
+    
+    // Inicializar EmailJS
     emailjs.init('naOhhhdCRqiLYdV5P');
     
     // Configurar selector de teléfono internacional
@@ -18,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     callback(data.country_code);
                 })
                 .catch(function() {
-                    callback('us'); // Fallback a EE.UU.
+                    callback('us');
                 });
         },
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
@@ -34,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Validar nombres y apellidos
         const nombres = document.getElementById('corporate-names').value.trim();
         const apellidos = document.getElementById('corporate-lastnames').value.trim();
         
@@ -43,14 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Mostrar estado de carga
         submitBtn.classList.add('loading');
         
-        // Generar ID de seguimiento profesional
         const trackingId = generateTrackingId();
         
         try {
-            // 1. Enviar a Netlify Forms
             const formData = new FormData(form);
             formData.append('tracking_id', trackingId);
             formData.append('telefono_completo', phoneInput.getNumber());
@@ -61,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: new URLSearchParams(formData),
             });
             
-            // 2. Enviar correo con EmailJS
             await emailjs.send(
                 'service_wy6vkhd',
                 'template_wmugv6o',
@@ -82,13 +140,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             );
             
-            // Mostrar confirmación
             showConfirmation(trackingId);
             form.reset();
             
         } catch (error) {
-            console.error('Error completo:', error);
-            showError('Ocurrió un error al enviar el formulario. Por favor intente nuevamente.');
+            console.error('Error:', error);
+            alert('Ocurrió un error al enviar el formulario. Por favor intente nuevamente.');
         } finally {
             submitBtn.classList.remove('loading');
         }
@@ -96,28 +153,54 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurar botón copiar ID
     document.getElementById('corporateCopyBtn').addEventListener('click', copyTrackingId);
+    
+    // Animation on scroll
+    const animateOnScroll = function() {
+        const elements = document.querySelectorAll('.card, .company-card');
+        const windowHeight = window.innerHeight;
+        const triggerOffset = 100;
+        
+        elements.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            
+            if (elementPosition < windowHeight - triggerOffset) {
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }
+        });
+    };
+    
+    // Initialize animation states
+    const animatedElements = document.querySelectorAll('.card, .company-card');
+    animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    });
+    
+    setTimeout(animateOnScroll, 300);
+    window.addEventListener('scroll', animateOnScroll);
+    window.addEventListener('load', function() {
+        setTimeout(animateOnScroll, 300);
+    });
 });
 
-// Generar ID de seguimiento profesional
+// Funciones auxiliares
 function generateTrackingId() {
     const datePart = new Date().getTime().toString(36).toUpperCase();
-    const randomPart = Math.floor(Math.random() * 900) + 100; // Número entre 100-999
+    const randomPart = Math.floor(Math.random() * 900) + 100;
     return `JASPI-${datePart}-${randomPart}`;
 }
 
-// Mostrar panel de confirmación
 function showConfirmation(trackingId) {
     const confirmationPanel = document.getElementById('corporateConfirmation');
     const trackingElement = document.getElementById('corporateTrackingId');
     
     trackingElement.textContent = trackingId;
     confirmationPanel.classList.remove('hidden');
-    
-    // Scroll suave a la confirmación
     confirmationPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Copiar ID de seguimiento
 function copyTrackingId() {
     const trackingId = document.getElementById('corporateTrackingId').textContent;
     navigator.clipboard.writeText(trackingId);
@@ -140,9 +223,4 @@ function copyTrackingId() {
             Copiar ID
         `;
     }, 2000);
-}
-
-// Mostrar mensaje de error
-function showError(message) {
-    alert(message);
 }
