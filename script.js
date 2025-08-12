@@ -1,11 +1,72 @@
-// Añadir este código al archivo script.js existente
-
-// Formulario Corporativo
 document.addEventListener('DOMContentLoaded', function() {
+    // Mobile Menu
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navigation = document.querySelector('.navigation');
+    
+    menuToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        navigation.classList.toggle('active');
+        
+        // Toggle body overflow when menu is open
+        if (navigation.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Close menu when clicking on links
+    document.querySelectorAll('.navigation a').forEach(link => {
+        link.addEventListener('click', function() {
+            menuToggle.classList.remove('active');
+            navigation.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            if (this.getAttribute('href') === '#') {
+                e.preventDefault();
+                return;
+            }
+            
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Header scroll effect
+    const header = document.querySelector('.header');
+    
+    function updateHeader() {
+        if (window.scrollY > 100) {
+            header.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        } else {
+            header.style.boxShadow = 'none';
+        }
+    }
+    
+    updateHeader();
+    window.addEventListener('scroll', updateHeader);
+    
     // Configurar año actual en el footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
-    // Inicializar EmailJS (reemplaza con tu clave pública)
+    // Inicializar EmailJS con tu clave pública
     emailjs.init('naOhhhdCRqiLYdV5P');
     
     // Configurar selector de teléfono internacional
@@ -20,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     callback(data.country_code);
                 })
                 .catch(function() {
-                    callback('us'); // Fallback a EE.UU.
+                    callback('us');
                 });
         },
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
@@ -29,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hiddenInput: "full_phone",
     });
     
-    // Manejar envío del formulario
+    // Manejar envío del formulario corporativo
     const form = document.getElementById('corporateForm');
     const submitBtn = document.getElementById('corporateSubmitBtn');
     
@@ -108,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Generar ID de seguimiento profesional
 function generateTrackingId() {
     const datePart = new Date().getTime().toString(36).toUpperCase();
-    const randomPart = Math.floor(Math.random() * 900) + 100; // Número entre 100-999
+    const randomPart = Math.floor(Math.random() * 900) + 100;
     return `JASPI-${datePart}-${randomPart}`;
 }
 
@@ -157,3 +218,38 @@ function copyTrackingId() {
 function showError(message) {
     alert(message);
 }
+
+// Animation on scroll
+const animateOnScroll = function() {
+    const elements = document.querySelectorAll('.card, .company-card');
+    const windowHeight = window.innerHeight;
+    const triggerOffset = 100;
+    
+    elements.forEach(element => {
+        const elementPosition = element.getBoundingClientRect().top;
+        
+        if (elementPosition < windowHeight - triggerOffset) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }
+    });
+};
+
+// Initialize animation states
+const animatedElements = document.querySelectorAll('.card, .company-card');
+animatedElements.forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+});
+
+// Run once on load
+setTimeout(animateOnScroll, 300);
+
+// Then on scroll
+window.addEventListener('scroll', animateOnScroll);
+
+// Prevent animations from firing too early during page load
+window.addEventListener('load', function() {
+    setTimeout(animateOnScroll, 300);
+});
